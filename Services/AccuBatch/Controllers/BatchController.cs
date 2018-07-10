@@ -84,9 +84,11 @@ namespace AccuBatch.Controllers
                 AmazonECSClient ecsClient = new AmazonECSClient(Environment.GetEnvironmentVariable("KEY_ID"), Environment.GetEnvironmentVariable("KEY_SEC"));
 
                 RunTaskRequest taskRequest = new RunTaskRequest();
-                taskRequest.TaskDefinition = "BatchTask:2";
+                //taskRequest.TaskDefinition = "BatchTask:2";
+                taskRequest.TaskDefinition = "BatchTask:1";
                 taskRequest.LaunchType = LaunchType.EC2;
-                taskRequest.Cluster = "Accu-IdentityStack-TMFCOUNJA02U";
+                //taskRequest.Cluster = "Accu-IdentityStack-TMFCOUNJA02U";
+                taskRequest.Cluster = "POC-Acumark-IdentityStack-1V7777UCVYPO8";
                 taskRequest.Count = 1;
 
                 if (taskRequest.Overrides == null)
