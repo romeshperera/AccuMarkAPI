@@ -12,7 +12,7 @@ namespace BatchFileCreator
 {
     class Program
     {
-        private const string bucketName = "r-output";
+        private const string bucketName = "acumark-output";// "r-output";
         //private const string keyName = "*** provide a name for the uploaded object ***";
         private static string filePath = "";
         // Specify your bucket region (an example region is shown).
