@@ -86,8 +86,8 @@ namespace AccuBatch.Controllers
                 RunTaskRequest taskRequest = new RunTaskRequest();
                 taskRequest.TaskDefinition = "BatchTask:2";
                 taskRequest.LaunchType = LaunchType.EC2;
-                //taskRequest.Cluster = "Accu-IdentityStack-TMFCOUNJA02U";
-                taskRequest.Cluster = "POC-Acumark-IdentityStack-1V7777UCVYPO8";
+                taskRequest.Cluster = "Accu-IdentityStack-TMFCOUNJA02U";
+                //taskRequest.Cluster = "POC-Acumark-IdentityStack-1V7777UCVYPO8";
                 taskRequest.Count = 1;
 
                 if (taskRequest.Overrides == null)
@@ -128,7 +128,7 @@ namespace AccuBatch.Controllers
             }
             catch (Exception ex)
             {
-                response = "MAIN Fail-" + ex.Message + ex.StackTrace + ex.Source + ex.ToString();
+                response = "MAIN Fail-" +Environment.GetEnvironmentVariable("KEY_ID")+"|||||"+ Environment.GetEnvironmentVariable("KEY_SEC") + ex.Message + ex.StackTrace + ex.Source + ex.ToString();
             }
 
             return response;
