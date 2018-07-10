@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  accubatch:
+    image: ${DOCKER_REGISTRY}accubatch
+    build:
+      context: .
+      dockerfile: Services\AccuBatch\Dockerfile
+
+  accumarkers:
+    image: ${DOCKER_REGISTRY}accumarkers
+    build:
+      context: .
+      dockerfile: Services\AccuMarkers\Dockerfile
+
+
+  accuorders:
+    image: ${DOCKER_REGISTRY}accuorders
+    build:
+      context: .
+      dockerfile: Services\AccuOrders\Dockerfile
+
+
+  batchfilecreator:
+    image: ${DOCKER_REGISTRY}batchfilecreator
+    build:
+      context: .
+      dockerfile: Tasks\BatchFileCreator\Dockerfile
+
