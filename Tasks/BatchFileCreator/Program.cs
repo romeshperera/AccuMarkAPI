@@ -12,55 +12,66 @@ namespace BatchFileCreator
 {
     class Program
     {
-        private const string bucketName = "r-output";//"acumark-output";// "r-output";
-        //private const string keyName = "*** provide a name for the uploaded object ***";
-        private static string filePath = "";
-        // Specify your bucket region (an example region is shown).
-        private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USWest2;
+        private static readonly string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        private static readonly string AWS_SECRET_ACCESS_KEY = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+        private static readonly string BUCKET_NAME = Environment.GetEnvironmentVariable("BUCKET_NAME");
+        private static readonly RegionEndpoint BUCKET_REGION = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("BUCKET_REGION"));
+
+        private static readonly string APP_PARAM = Environment.GetEnvironmentVariable("APP_PARAM");
+
         private static IAmazonS3 s3Client;
 
 
         static void Main(string[] args)
         {
-            string host = "Task_";
+            //Create a data file
+            string filePath = CreateFile();
+
+            //Add file to S3
+            s3Client = new AmazonS3Client(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, BUCKET_REGION);
+            UploadFileAsync(filePath).Wait();
+        }
+
+        //Creates a file to upload to S3
+        private static string CreateFile()
+        {
+            string hostData = "Task_";
             try
             {
-                host += Dns.GetHostName() + " - ";
+                hostData += Dns.GetHostName() + " - ";
                 IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
                 foreach (IPAddress addr in localIPs)
                 {
                     if (addr.AddressFamily == AddressFamily.InterNetwork)
                     {
-                        host = addr + " ";
+                        hostData += addr + " ";
                     }
                 }
             }
             catch (Exception ex)
             {
             }
-            string env = Environment.GetEnvironmentVariable("AWS_REGION");
-            string fileName = host +"_"+ env+ ".txt";
-            //Create a file
+
+            string fileName = hostData + "_" + APP_PARAM + ".txt";
+
+            //Create a file and add data
             using (StreamWriter outputFile = new StreamWriter(fileName))
             {
-                outputFile.WriteLine(host + DateTime.Now.ToLongTimeString());
+                outputFile.WriteLine(hostData + DateTime.Now.ToLongTimeString());
             }
 
-            filePath = fileName;
-
-            s3Client = new AmazonS3Client(Environment.GetEnvironmentVariable("KEY_ID"), Environment.GetEnvironmentVariable("KEY_SEC"), bucketRegion);
-            UploadFileAsync().Wait();
+            return fileName;
         }
 
-        private static async Task UploadFileAsync()
+        //Uploads file to S3
+        private static async Task UploadFileAsync(string filePath)
         {
             try
             {
-                var fileTransferUtility =
-                    new TransferUtility(s3Client);
+                var fileTransferUtility = new TransferUtility(s3Client);
 
                 // Option 1. Upload a file. The file name is used as the object key name.
-                await fileTransferUtility.UploadAsync(filePath, bucketName);
+                await fileTransferUtility.UploadAsync(filePath, BUCKET_NAME);
                 Console.WriteLine("Upload 1 completed");
 
                 // Option 2. Specify object key name explicitly.

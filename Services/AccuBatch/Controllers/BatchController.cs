@@ -15,6 +15,15 @@ namespace AccuBatch.Controllers
     [Route("Batch")]
     public class BatchController : Controller
     {
+        private readonly string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        private readonly string AWS_SECRET_ACCESS_KEY = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+        private readonly string TASK_DEFINITION = Environment.GetEnvironmentVariable("TASK_DEFINITION");
+        private readonly string CLUSTER = Environment.GetEnvironmentVariable("CLUSTER");
+        private readonly string CONTAINER_NAME = Environment.GetEnvironmentVariable("CONTAINER_NAME");
+        private readonly string LAUNCH_TYPE = LaunchType.FindValue(Environment.GetEnvironmentVariable("LAUNCH_TYPE"));
+        private readonly int COUNT = int.Parse(Environment.GetEnvironmentVariable("COUNT"));
+
+
         // GET: Batch
         [HttpGet]
         public IEnumerable<string> Get()
@@ -78,60 +87,75 @@ namespace AccuBatch.Controllers
 
         private string RunNewTask(string input)
         {
-            string response = "Success";
+            string result = "Success - ";
             try
             {
-                AmazonECSClient ecsClient = new AmazonECSClient(Environment.GetEnvironmentVariable("KEY_ID"), Environment.GetEnvironmentVariable("KEY_SEC"));
+                //Create task request
+                RunTaskRequest taskRequest  = CreateTaskRequest();
+                taskRequest.Overrides.ContainerOverrides[0].Name = CONTAINER_NAME;// "BatchService";
+                taskRequest.Overrides.ContainerOverrides[0].Environment.Add(new Amazon.ECS.Model.KeyValuePair() { Name = "APP_PARAM", Value = input });
 
-                RunTaskRequest taskRequest = new RunTaskRequest();
-                taskRequest.TaskDefinition = "BatchTask:2";
-                taskRequest.LaunchType = LaunchType.EC2;
-                taskRequest.Cluster = "Accu-IdentityStack-TMFCOUNJA02U";
-                //taskRequest.Cluster = "POC-Acumark-IdentityStack-1V7777UCVYPO8";
-                taskRequest.Count = 1;
+                //Run the task
+                AmazonECSClient ecsClient = new AmazonECSClient(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY);
+                Task<RunTaskResponse> response = ecsClient.RunTaskAsync(taskRequest);
 
-                if (taskRequest.Overrides == null)
-                {
-                    taskRequest.Overrides = new TaskOverride();
-                }
-                if (taskRequest.Overrides.ContainerOverrides == null)
-                {
-                    taskRequest.Overrides.ContainerOverrides = new List<ContainerOverride>();
-                }
-                if (taskRequest.Overrides.ContainerOverrides.Count == 0)
-                {
-                    taskRequest.Overrides.ContainerOverrides.Add(new ContainerOverride());
-                }
-                if (taskRequest.Overrides.ContainerOverrides[0].Environment == null)
-                {
-                    taskRequest.Overrides.ContainerOverrides[0].Environment = new List<Amazon.ECS.Model.KeyValuePair>();
-                }
-                taskRequest.Overrides.ContainerOverrides[0].Name = "BatchService";
-                taskRequest.Overrides.ContainerOverrides[0].Environment.Add(new Amazon.ECS.Model.KeyValuePair() { Name = "AWS_REGION", Value = input });
-
-
-                Task<RunTaskResponse> tasks = ecsClient.RunTaskAsync(taskRequest);
-
-                response += " ID-" + tasks.Id;
-                if (tasks.Exception != null)
-                {
-                    response += " Ex-" + tasks.Exception.Message;
-                }
-
-                if (tasks.Result != null)
-                {
-                    response += " Res-" + tasks.Result.HttpStatusCode + " Fcode-";
-
-                    foreach (Failure ff in tasks.Result.Failures)
-                        response += ff.Reason;
-                }
+                //Collect response data
+                result += BuildResponseData(response);
             }
             catch (Exception ex)
             {
-                response = "MAIN Fail-" +Environment.GetEnvironmentVariable("KEY_ID")+"|||||"+ Environment.GetEnvironmentVariable("KEY_SEC") + ex.Message + ex.StackTrace + ex.Source + ex.ToString();
+                result = "Fail - msg:" + ex.Message +" stack:" + ex.StackTrace + " source:" + ex.Source + " data:" + ex.ToString();
             }
 
-            return response;
+            return result;
+        }
+
+        private RunTaskRequest CreateTaskRequest()
+        {
+            RunTaskRequest taskRequest = new RunTaskRequest();
+            taskRequest.TaskDefinition = TASK_DEFINITION;// "BatchTask:2";
+            taskRequest.Cluster = CLUSTER;// "Accu-IdentityStack-TMFCOUNJA02U";
+            taskRequest.LaunchType = LAUNCH_TYPE;// LaunchType.EC2;
+            taskRequest.Count = COUNT;//1;
+
+            if (taskRequest.Overrides == null)
+            {
+                taskRequest.Overrides = new TaskOverride();
+            }
+            if (taskRequest.Overrides.ContainerOverrides == null)
+            {
+                taskRequest.Overrides.ContainerOverrides = new List<ContainerOverride>();
+            }
+            if (taskRequest.Overrides.ContainerOverrides.Count == 0)
+            {
+                taskRequest.Overrides.ContainerOverrides.Add(new ContainerOverride());
+            }
+            if (taskRequest.Overrides.ContainerOverrides[0].Environment == null)
+            {
+                taskRequest.Overrides.ContainerOverrides[0].Environment = new List<Amazon.ECS.Model.KeyValuePair>();
+            }
+
+            return taskRequest;
+        }
+
+        //Collects response data
+        private string BuildResponseData(Task<RunTaskResponse> response)
+        {
+            string results = " ID-" + response.Id;
+            if (response.Exception != null)
+            {
+                results += " Exception-" + response.Exception.Message;
+            }
+
+            if (response.Result != null)
+            {
+                results += " HttpStatusCode-" + response.Result.HttpStatusCode + " Failure-";
+
+                foreach (Failure ff in response.Result.Failures)
+                    results += ff.Reason;
+            }
+
+            return results;
         }
     }
 }
