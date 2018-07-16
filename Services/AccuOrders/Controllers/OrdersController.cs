@@ -50,9 +50,20 @@ namespace AccuOrders.Controllers
 
         // GET: Orders/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Console.WriteLine("Got the requst for - " + id);
+            if (id == 0)
+            {
+                Console.Error.WriteLine("Sample Error for - " + id);
+                return NotFound("Invalid ID");
+            }
+            if (id == 100)
+            {
+                Console.Error.WriteLine("Sample Error for - " + id);
+                return NoContent();
+            }
+            return Ok("valuex");
         }
         
         // POST: Orders
