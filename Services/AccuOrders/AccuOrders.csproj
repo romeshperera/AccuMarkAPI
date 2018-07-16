@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Logger\AccuLogger.csproj" />
     <ProjectReference Include="..\..\Core\PIWapper\PIWapper.csproj" />
   </ItemGroup>
 

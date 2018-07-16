@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using AccuLogger; 
 
 namespace AccuOrders.Controllers
 {
@@ -13,6 +15,13 @@ namespace AccuOrders.Controllers
     [Route("Orders")]
     public class OrdersController : Controller
     {
+        private readonly ILogger _logger;
+
+        public OrdersController(ILoggerFactory logger)
+        {
+            _logger = logger.CreateLogger("AccuOrders.Controllers.OrdersController");
+        }
+
         // GET: Orders
         [HttpGet]
         public IEnumerable<string> Get()
@@ -53,16 +62,26 @@ namespace AccuOrders.Controllers
         [ProducesResponseType(404)]
         public IActionResult Get(int id)
         {
-            Console.WriteLine("Got the requst for - " + id);
+            //Console.WriteLine("Got the requst for - " + id);
+            _logger.LogInformation(LoggingEvents.GetItem, "Getting item {ID}", id);
             if (id == 0)
             {
-                Console.Error.WriteLine("Sample Error for - " + id);
+                //Console.Error.WriteLine("Sample Error for - " + id);
+                _logger.LogWarning(LoggingEvents.GetItemNotFound,"GetById({ID}) NOT FOUND", id);
                 return NotFound("Invalid ID");
             }
             if (id == 1)
             {
                 Console.Error.WriteLine("Sample Error for - " + id);
-                throw new NotImplementedException();
+                try
+                {
+                    throw new NotImplementedException();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(LoggingEvents.GetItemNotFound, ex, "GetById({ID}) NOT FOUND", id);
+                    return NotFound();
+                }
                 //return NotFound("Invalid ID");
             }
             if (id == 100)
@@ -70,7 +89,7 @@ namespace AccuOrders.Controllers
                 Console.Error.WriteLine("Sample Error for - " + id);
                 return NoContent();
             }
-            return Ok("valuexx");
+            return Ok("valuexxx");
         }
         
         // POST: Orders
