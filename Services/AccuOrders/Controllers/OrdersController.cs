@@ -50,6 +50,7 @@ namespace AccuOrders.Controllers
 
         // GET: Orders/5
         [HttpGet("{id}", Name = "Get")]
+        [ProducesResponseType(404)]
         public IActionResult Get(int id)
         {
             Console.WriteLine("Got the requst for - " + id);
@@ -58,12 +59,18 @@ namespace AccuOrders.Controllers
                 Console.Error.WriteLine("Sample Error for - " + id);
                 return NotFound("Invalid ID");
             }
+            if (id == 1)
+            {
+                Console.Error.WriteLine("Sample Error for - " + id);
+                throw new NotImplementedException();
+                //return NotFound("Invalid ID");
+            }
             if (id == 100)
             {
                 Console.Error.WriteLine("Sample Error for - " + id);
                 return NoContent();
             }
-            return Ok("valuex");
+            return Ok("valuexx");
         }
         
         // POST: Orders
