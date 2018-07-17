@@ -6,9 +6,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
-using log4net;
 using log4net.Appender;
-using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Http;
@@ -20,57 +18,18 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        //private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            //Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-            //h.Root.Level = Level.All;
-            //h.Root.AddAppender(CreateConsoleAppender());
-            //h.Root.AddAppender(CreateFileAppender());
-            //h.Configured = true;
-
-            //XmlDocument log4netConfig = new XmlDocument();
-            //log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
+            XmlDocument log4netConfig = new XmlDocument();
+            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
 
             var repo = log4net.LogManager.CreateRepository(
                 Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
-            //log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
-            log4net.Config.BasicConfigurator.Configure(repo, CreateConsoleAppender());
-            ILog logger = LogManager.GetLogger(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-            logger.Info("Application - Main is invoked");
-        }
-
-        public IAppender CreateConsoleAppender()
-        {
-            ConsoleAppender appender = new ConsoleAppender();
-            appender.Name = "ConsoleAppender";
-            PatternLayout layout = new PatternLayout();
-            layout.ConversionPattern = "%-4timestamp [%thread] %-5level %logger %ndc - %message%newline";
-            layout.ActivateOptions();
-            appender.Layout = layout;
-            appender.ActivateOptions();
-
-            return appender;
-        }
-
-        public static IAppender CreateFileAppender()
-        {
-            RollingFileAppender appender = new RollingFileAppender();
-            appender.Name = "RollingFileAppender";
-            appender.File = @"c:\temp\aa.log";
-            appender.AppendToFile = false;
-            appender.RollingStyle = RollingFileAppender.RollingMode.Size;
-            appender.MaxSizeRollBackups = 10;
-            appender.MaximumFileSize = "1000MB";
-            PatternLayout layout = new PatternLayout();
-            layout.ConversionPattern = "%-4timestamp [%thread] %-5level %logger %ndc - %message%newline";
-            layout.ActivateOptions();
-
-            appender.Layout = layout;
-            appender.ActivateOptions();
-
-            return appender;
+            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ConversionPattern = "% -5level % logger % ndc - % message % newline";
+            log.Info("Application - Main is invoked");
         }
 
         // GET: Markers
@@ -79,7 +38,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            //log.Info("Application - Main is invoked xxxrr");
+            log.Info("Application - Main is invoked xxx");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
@@ -114,19 +73,19 @@ namespace AccuMarkers.Controllers
         {
             return "value";
         }
-        
+
         // POST: Markers
         [HttpPost]
         public void Post([FromBody]string value)
         {
         }
-        
+
         // PUT: Markers/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
         }
-        
+
         // DELETE: ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
