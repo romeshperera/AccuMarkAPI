@@ -6,12 +6,6 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
-using log4net;
-using log4net.Appender;
-using log4net.Core;
-using log4net.Filter;
-using log4net.Layout;
-using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,22 +15,17 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private readonly log4net.ILog log = null;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            PatternLayout pattern = new PatternLayout("%date %-5level: %message%newline");
-            pattern.ActivateOptions();
+            XmlDocument log4netConfig = new XmlDocument();
+            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
 
-            ConsoleAppender appender = new ConsoleAppender();
-            appender.Layout = pattern;
-            appender.ActivateOptions();
+            var repo = log4net.LogManager.CreateRepository(
+                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
-            Hierarchy hierarchy = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-            hierarchy.Root.Level = Level.All;
-            hierarchy.Root.AddAppender(appender);
-            hierarchy.Configured = true;
+            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
 
-            log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log.Info("Application - Main is invoked");
         }
 
@@ -46,7 +35,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            log.Info("Application - Main is invoked xxxyyt");
+            log.Info("Application - Main is invoked xxx");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
