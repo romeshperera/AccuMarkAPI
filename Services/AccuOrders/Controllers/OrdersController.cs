@@ -11,6 +11,11 @@ using log4net;
 using System.Xml;
 using System.Reflection;
 using Amazon;
+using log4net.Core;
+using AWS.Logger.Log4net;
+using log4net.Repository.Hierarchy;
+using log4net.Layout;
+using Amazon.Runtime;
 
 namespace AccuOrders.Controllers
 {
@@ -18,27 +23,41 @@ namespace AccuOrders.Controllers
     [Route("Orders")]
     public class OrdersController : Controller
     {
-        //private readonly ILogger _logger;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        private readonly string AWS_SECRET_ACCESS_KEY = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
 
-        public OrdersController(ILoggerFactory logger)
+        ILog log = LogManager.GetLogger(typeof(OrdersController));
+        public OrdersController()
         {
-            AWSConfigs.AWSRegion = "us-west-2";
-            AWSConfigs.Logging = LoggingOptions.Log4Net;
+            ConfigureLog4net();
 
-            XmlDocument log4netConfig = new XmlDocument();
-            log4netConfig.Load(System.IO.File.OpenRead("App.config"));
+           
+            log.Info("Check the AWS Console CloudWatch Logs console in us-east-1");
+            log.Info("to see messages in the log streams for the");
+            log.Info("log group Log4net.ProgrammaticConfigurationExample");
+        }
 
-            var repo = log4net.LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+        private void ConfigureLog4net()
+        {
+            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository("OrdersController");
+            PatternLayout patternLayout = new PatternLayout();
 
-            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            patternLayout.ConversionPattern = "%-4timestamp [%thread] %-5level %logger %ndc - %message%newline";
+            patternLayout.ActivateOptions();
 
-            log.Info("Application - Main is invoked");
+            AWSAppender appender = new AWSAppender();
+            appender.Layout = patternLayout;
+            appender.Credentials = new BasicAWSCredentials(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY);
 
-            
+            // Set log group and region. Assume credentials will be found using the default profile or IAM credentials.
+            appender.LogGroup = "Log4net.ProgrammaticConfigurationExample";
+            appender.Region = "us-west-2";
 
-            //_logger = logger.CreateLogger("AccuOrders.Controllers.OrdersController");
+            appender.ActivateOptions();
+            hierarchy.Root.AddAppender(appender);
+
+            hierarchy.Root.Level = Level.All;
+            hierarchy.Configured = true;
         }
 
         // GET: Orders
