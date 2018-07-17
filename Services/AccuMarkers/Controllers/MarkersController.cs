@@ -6,6 +6,11 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
+using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,18 +20,36 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            XmlDocument log4netConfig = new XmlDocument();
-            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
+            Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            h.Root.Level = Level.All;
+            h.Root.AddAppender(CreateConsoleAppender());
+            h.Configured = true;
 
-            var repo = log4net.LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            //XmlDocument log4netConfig = new XmlDocument();
+            //log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
 
-            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            //var repo = log4net.LogManager.CreateRepository(
+            //    Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+
+            //log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
 
             log.Info("Application - Main is invoked");
+        }
+
+        public IAppender CreateConsoleAppender()
+        {
+            ConsoleAppender appender = new ConsoleAppender();
+            appender.Name = "ConsoleAppender";
+            PatternLayout layout = new PatternLayout();
+            layout.ConversionPattern ="% newline % date % -5level % logger – % message – % property % newline";
+            layout.ActivateOptions();
+            appender.Layout = layout;
+            appender.ActivateOptions();
+
+            return appender;
         }
 
         // GET: Markers
@@ -35,7 +58,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            log.Info("Application - Main is invoked xxx");
+            log.Info("Application - Main is invoked xxxrr");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
