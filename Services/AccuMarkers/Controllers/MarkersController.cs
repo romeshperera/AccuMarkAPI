@@ -21,7 +21,7 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private log4net.ILog log = null;
+        private readonly log4net.ILog log = null;
         public MarkersController()
         {
             PatternLayout pattern = new PatternLayout("%date %-5level: %message%newline");
@@ -30,18 +30,10 @@ namespace AccuMarkers.Controllers
             ConsoleAppender appender = new ConsoleAppender();
             appender.Layout = pattern;
             appender.ActivateOptions();
-            Hierarchy hierarchy = null;
-            try
-            {
-                hierarchy = (Hierarchy)LogManager.GetRepository(Assembly.GetEntryAssembly());
-            }
-            catch (Exception ex)
-            {
-                hierarchy = (Hierarchy)LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-                hierarchy.Root.AddAppender(appender);
-            }
 
+            Hierarchy hierarchy = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
             hierarchy.Root.Level = Level.All;
+            hierarchy.Root.AddAppender(appender);
             hierarchy.Configured = true;
 
             log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -54,7 +46,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            log.Info("Application - Main is invoked xxxyy");
+            log.Info("Application - Main is invoked xxxyyt");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
