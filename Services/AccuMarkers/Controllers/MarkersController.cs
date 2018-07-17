@@ -45,7 +45,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            log.Info("Application - Main is invoked xxx");
+            log.Info("Application - Main is invoked xxxyy");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
