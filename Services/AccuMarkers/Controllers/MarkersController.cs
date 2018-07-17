@@ -23,19 +23,20 @@ namespace AccuMarkers.Controllers
         private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-            h.Root.Level = Level.All;
-            h.Root.AddAppender(CreateConsoleAppender());
-            h.Root.AddAppender(CreateFileAppender());
-            h.Configured = true;
+            //Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            //h.Root.Level = Level.All;
+            //h.Root.AddAppender(CreateConsoleAppender());
+            //h.Root.AddAppender(CreateFileAppender());
+            //h.Configured = true;
 
             //XmlDocument log4netConfig = new XmlDocument();
             //log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
 
-            //var repo = log4net.LogManager.CreateRepository(
-            //    Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            var repo = log4net.LogManager.CreateRepository(
+                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
 
             //log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+            log4net.Config.BasicConfigurator.Configure(repo, CreateConsoleAppender());
 
             log.Info("Application - Main is invoked");
         }
