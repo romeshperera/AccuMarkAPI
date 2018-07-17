@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using log4net;
 using System.Xml;
 using System.Reflection;
+using Amazon;
 
 namespace AccuOrders.Controllers
 {
@@ -22,8 +23,11 @@ namespace AccuOrders.Controllers
 
         public OrdersController(ILoggerFactory logger)
         {
+            AWSConfigs.AWSRegion = "us-west-2";
+            AWSConfigs.Logging = LoggingOptions.Log4Net;
+
             XmlDocument log4netConfig = new XmlDocument();
-            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
+            log4netConfig.Load(System.IO.File.OpenRead("App.config"));
 
             var repo = log4net.LogManager.CreateRepository(
                 Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
@@ -32,6 +36,7 @@ namespace AccuOrders.Controllers
 
             log.Info("Application - Main is invoked");
 
+            
 
             //_logger = logger.CreateLogger("AccuOrders.Controllers.OrdersController");
         }
