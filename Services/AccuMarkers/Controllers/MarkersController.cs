@@ -29,6 +29,8 @@ namespace AccuMarkers.Controllers
 
             log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
             ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ConversionPattern = "% -5level % logger % ndc - % message % newline";
+            ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ActivateOptions();
+            (((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).ActivateOptions();
             log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log.Info("Application - Main is invoked");
         }
