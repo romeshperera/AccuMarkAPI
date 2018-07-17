@@ -74,7 +74,7 @@ namespace AccuOrders.Controllers
             {
             }
 
-            return new string[] { "CppWapper: " + core, "HostIP: " + host };
+            return new string[] { "xCppWapper: " + core, "HostIP: " + host };
         }
 
         // GET: Orders/5
