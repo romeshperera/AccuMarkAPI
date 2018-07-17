@@ -20,7 +20,7 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
             //Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
@@ -37,8 +37,8 @@ namespace AccuMarkers.Controllers
 
             //log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
             log4net.Config.BasicConfigurator.Configure(repo, CreateConsoleAppender());
-
-            log.Info("Application - Main is invoked");
+            ILog logger = LogManager.GetLogger(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            logger.Info("Application - Main is invoked");
         }
 
         public IAppender CreateConsoleAppender()
@@ -79,7 +79,7 @@ namespace AccuMarkers.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-            log.Info("Application - Main is invoked xxxrr");
+            //log.Info("Application - Main is invoked xxxrr");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
