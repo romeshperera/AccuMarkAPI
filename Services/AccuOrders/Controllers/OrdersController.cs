@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using AccuLogger; 
+using log4net;
+using System.Xml;
+using System.Reflection;
 
 namespace AccuOrders.Controllers
 {
@@ -15,11 +17,23 @@ namespace AccuOrders.Controllers
     [Route("Orders")]
     public class OrdersController : Controller
     {
-        private readonly ILogger _logger;
+        //private readonly ILogger _logger;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public OrdersController(ILoggerFactory logger)
         {
-            _logger = logger.CreateLogger("AccuOrders.Controllers.OrdersController");
+            XmlDocument log4netConfig = new XmlDocument();
+            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
+
+            var repo = log4net.LogManager.CreateRepository(
+                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+
+            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+
+            log.Info("Application - Main is invoked");
+
+
+            //_logger = logger.CreateLogger("AccuOrders.Controllers.OrdersController");
         }
 
         // GET: Orders
@@ -28,7 +42,8 @@ namespace AccuOrders.Controllers
         {
             string core = String.Empty;
             string host = String.Empty;
-
+            log.Info("xxxxxxxxxxxxxx");
+            Console.WriteLine("yyyyyyyyyy");
             try
             {
                 core = SampleWapper.Wapper.Add(1, 2).ToString();
@@ -63,11 +78,11 @@ namespace AccuOrders.Controllers
         public IActionResult Get(int id)
         {
             //Console.WriteLine("Got the requst for - " + id);
-            _logger.LogInformation(LoggingEvents.GetItem, "Getting item {ID}", id);
+            //_logger.LogInformation(LoggingEvents.GetItem, "Getting item {ID}", id);
             if (id == 0)
             {
                 //Console.Error.WriteLine("Sample Error for - " + id);
-                _logger.LogWarning(LoggingEvents.GetItemNotFound,"GetById({ID}) NOT FOUND", id);
+                //_logger.LogWarning(LoggingEvents.GetItemNotFound,"GetById({ID}) NOT FOUND", id);
                 return NotFound("Invalid ID");
             }
             if (id == 1)
@@ -79,9 +94,10 @@ namespace AccuOrders.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(LoggingEvents.GetItemNotFound, ex, "GetById({ID}) NOT FOUND", id);
+                    //_logger.LogWarning(LoggingEvents.GetItemNotFound, ex, "GetById({ID}) NOT FOUND", id);
                     return NotFound();
                 }
+                
                 //return NotFound("Invalid ID");
             }
             if (id == 100)

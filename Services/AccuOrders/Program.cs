@@ -23,7 +23,6 @@ namespace AccuOrders
                 {
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
-                    logging.AddDebug();
                 })
                 .UseStartup<Startup>()
                 .Build();
