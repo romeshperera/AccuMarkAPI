@@ -7,10 +7,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
 using log4net.Appender;
+using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AccuLogger;
 
 namespace AccuMarkers.Controllers
 {
@@ -18,20 +20,14 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private log4net.ILog log = L4NLogger.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            XmlDocument log4netConfig = new XmlDocument();
-            log4netConfig.Load(System.IO.File.OpenRead("log4net.config"));
-
-            var repo = log4net.LogManager.CreateRepository(
-                Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
-
-            log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
-            ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ConversionPattern = "[%thread] %-5level %logger %ndc - %message%newline";
-            ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ActivateOptions();
-            log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            log.Info("Application - Main is invoked");
+            log.Info("Application - ii");
+            log.Fatal("Application - ff");
+            log.Error("Application - ee");
+            log.Debug("Application - dd");
+            log.Warn("Application - ww");
         }
 
         // GET: Markers

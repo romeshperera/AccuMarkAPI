@@ -3,16 +3,35 @@ using System;
 
 namespace AccuLogger
 {
-    public class LoggingEvents
+    public class CwLogger
     {
-        public const int GenerateItems = 1000;
-        public const int ListItems = 1001;
-        public const int GetItem = 1002;
-        public const int InsertItem = 1003;
-        public const int UpdateItem = 1004;
-        public const int DeleteItem = 1005;
+        private string logArea = string.Empty;
 
-        public const int GetItemNotFound = 4000;
-        public const int UpdateItemNotFound = 4001;
+        public CwLogger(string LogArea)
+        {
+            logArea = LogArea;
+        }
+
+        public void Log(LogLevel logLevel,string message)
+        {
+            string level = String.Empty;
+            switch(logLevel)
+            {
+                case LogLevel.None: level = "[NONE]"; break;
+                case LogLevel.Trace: level = "[TRACE]"; break;
+                case LogLevel.Debug: level = "[DEBUG]"; break;
+                case LogLevel.Information: level = "[INFO]"; break;
+                case LogLevel.Warning: level = "[WARN]"; break;
+                case LogLevel.Error: level = "[ERROR]"; break;
+                case LogLevel.Critical: level = "[CRTCL]"; break;
+            }
+
+            if(logLevel != LogLevel.None)
+            {
+
+            }
+        }
+
+
     }
 }
