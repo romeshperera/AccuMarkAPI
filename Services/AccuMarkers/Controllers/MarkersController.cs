@@ -23,7 +23,7 @@ namespace AccuMarkers.Controllers
         private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            Hierarchy h = (Hierarchy)log4net.LogManager.GetRepository(Assembly.GetEntryAssembly());
+            Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
             h.Root.Level = Level.All;
             h.Root.AddAppender(CreateConsoleAppender());
             h.Root.AddAppender(CreateFileAppender());
