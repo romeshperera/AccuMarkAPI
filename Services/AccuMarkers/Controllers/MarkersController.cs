@@ -18,7 +18,7 @@ namespace AccuMarkers.Controllers
     [Route("Markers")]
     public class MarkersController : Controller
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
             XmlDocument log4netConfig = new XmlDocument();
@@ -29,6 +29,7 @@ namespace AccuMarkers.Controllers
 
             log4net.Config.XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
             ((((Hierarchy)repo).GetAppenders()[0] as ConsoleAppender).Layout as PatternLayout).ConversionPattern = "% -5level % logger % ndc - % message % newline";
+            log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log.Info("Application - Main is invoked");
         }
 
