@@ -23,9 +23,10 @@ namespace AccuMarkers.Controllers
         private log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MarkersController()
         {
-            Hierarchy h = (Hierarchy)log4net.LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
+            Hierarchy h = (Hierarchy)log4net.LogManager.GetRepository(Assembly.GetEntryAssembly());
             h.Root.Level = Level.All;
             h.Root.AddAppender(CreateConsoleAppender());
+            h.Root.AddAppender(CreateFileAppender());
             h.Configured = true;
 
             //XmlDocument log4netConfig = new XmlDocument();
@@ -44,8 +45,27 @@ namespace AccuMarkers.Controllers
             ConsoleAppender appender = new ConsoleAppender();
             appender.Name = "ConsoleAppender";
             PatternLayout layout = new PatternLayout();
-            layout.ConversionPattern ="% newline % date % -5level % logger – % message – % property % newline";
+            layout.ConversionPattern = "%-4timestamp [%thread] %-5level %logger %ndc - %message%newline";
             layout.ActivateOptions();
+            appender.Layout = layout;
+            appender.ActivateOptions();
+
+            return appender;
+        }
+
+        public static IAppender CreateFileAppender()
+        {
+            RollingFileAppender appender = new RollingFileAppender();
+            appender.Name = "RollingFileAppender";
+            appender.File = @"c:\temp\aa.log";
+            appender.AppendToFile = false;
+            appender.RollingStyle = RollingFileAppender.RollingMode.Size;
+            appender.MaxSizeRollBackups = 10;
+            appender.MaximumFileSize = "1000MB";
+            PatternLayout layout = new PatternLayout();
+            layout.ConversionPattern = "%-4timestamp [%thread] %-5level %logger %ndc - %message%newline";
+            layout.ActivateOptions();
+
             appender.Layout = layout;
             appender.ActivateOptions();
 
