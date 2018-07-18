@@ -35,6 +35,7 @@ namespace AccuMarkers.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            log.Info("Application - FillString");
             string markers = "";
             try
             {
