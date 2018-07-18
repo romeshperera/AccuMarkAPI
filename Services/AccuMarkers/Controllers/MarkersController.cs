@@ -13,6 +13,7 @@ using log4net.Repository.Hierarchy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AccuLogger;
+using System.Text;
 
 namespace AccuMarkers.Controllers
 {
@@ -34,6 +35,22 @@ namespace AccuMarkers.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            string markers = "";
+            try
+            {
+                StringBuilder str = new StringBuilder(100);
+                //get markers from native code
+                SampleWapper.Wapper.FillString(str, str.Capacity);
+                markers = str.ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return markers.Split(',');
+
+
             string core = String.Empty;
             string host = String.Empty;
             log.Info("Application - Main is invoked xxx");

@@ -24,4 +24,10 @@
     <ProjectReference Include="..\..\Core\PIWapper\PIWapper.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
