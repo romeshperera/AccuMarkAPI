@@ -55,3 +55,10 @@ services:
       context: .
       dockerfile: Services\AccuMarkDeleteMarkerAfterExport\Dockerfile
 
+
+  accumarkdeletemarkerafterplot:
+    image: ${DOCKER_REGISTRY}accumarkdeletemarkerafterplot
+    build:
+      context: .
+      dockerfile: Services\AccuMarkDeleteMarkerAfterPlot\Dockerfile
+
