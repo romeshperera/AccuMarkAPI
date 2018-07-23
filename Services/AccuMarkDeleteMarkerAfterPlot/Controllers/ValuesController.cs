@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Amazon.S3;
 
 namespace AccuMarkDeleteMarkerAfterPlot.Controllers
 {
