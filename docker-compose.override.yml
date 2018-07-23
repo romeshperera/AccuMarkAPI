@@ -19,9 +19,37 @@ services:
     ports:
       - "80"
 
+  accumarkstoragearea:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  accumarkmarkers:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  accumarkorders:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  accumarkdeletemarkerafterexport:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
 networks:
   default:
     external:
       name: nat
+
+
+
+
 
 

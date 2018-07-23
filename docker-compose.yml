@@ -27,3 +27,31 @@ services:
       context: .
       dockerfile: Tasks\BatchFileCreator\Dockerfile
 
+
+  accumarkstoragearea:
+    image: ${DOCKER_REGISTRY}accumarkstoragearea
+    build:
+      context: .
+      dockerfile: Services\AccuMarkStorageArea\Dockerfile
+
+
+  accumarkmarkers:
+    image: ${DOCKER_REGISTRY}accumarkmarkers
+    build:
+      context: .
+      dockerfile: Services\AccuMarkMarkers\Dockerfile
+
+
+  accumarkorders:
+    image: ${DOCKER_REGISTRY}accumarkorders
+    build:
+      context: .
+      dockerfile: Services\AccuMarkOrders\Dockerfile
+
+
+  accumarkdeletemarkerafterexport:
+    image: ${DOCKER_REGISTRY}accumarkdeletemarkerafterexport
+    build:
+      context: .
+      dockerfile: Services\AccuMarkDeleteMarkerAfterExport\Dockerfile
+
