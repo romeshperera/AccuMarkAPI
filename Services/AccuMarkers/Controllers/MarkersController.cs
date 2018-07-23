@@ -85,9 +85,12 @@ namespace AccuMarkers.Controllers
 
         // GET: Markers/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public IActionResult Get(string id)
         {
-            return "value";
+            if(id == "xx" || id == "yy"|| id == "zz")
+                return Ok("ID exists");
+            else
+                return NotFound(id);
         }
 
         // POST: Markers
