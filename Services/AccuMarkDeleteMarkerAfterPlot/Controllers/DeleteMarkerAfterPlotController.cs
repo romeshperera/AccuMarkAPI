@@ -20,8 +20,8 @@ namespace AccuMarkDeleteMarkerAfterPlot.Controllers
     [Route("api/DeleteMarkerAfterPlot")]
     public class DeleteMarkerAfterPlotController : Controller
     {
-        private readonly string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
-        private readonly string AWS_SECRET_ACCESS_KEY = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+        private static string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+        private static string AWS_SECRET_ACCESS_KEY = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
         private static readonly string BUCKET_NAME = "accumarkapi-client-x";
         private static readonly RegionEndpoint BUCKET_REGION = RegionEndpoint.USWest2;
         private static IAmazonS3 s3Client;
