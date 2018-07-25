@@ -17,7 +17,7 @@ using Amazon.SimpleEmail.Model;
 
 namespace AccuMarkDeleteMarkerAfterPlot.Controllers
 {
-    [Route("api/DeleteMarkerAfterPlot")]
+    [Route("DeleteMarkerAfterPlot")]
     public class DeleteMarkerAfterPlotController : Controller
     {
         private static string AWS_ACCESS_KEY_ID = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
